@@ -282,6 +282,22 @@
 
   /* ---------- Services ---------- */
   .services{padding:7rem 0 8rem;}
+  .founder{
+    display:flex; flex-direction:column; align-items:center; gap:1.2rem;
+    margin-bottom:3rem;
+  }
+  .founder-photo{
+    width:112px; height:112px; border-radius:50%;
+    object-fit:cover; object-position:top center;
+    border:2px solid var(--brass-dim);
+  }
+  .founder-name{
+    font-family:var(--font-display); font-style:italic;
+    font-size:1.3rem; color:var(--parchment);
+  }
+  .founder-title{
+    font-size:.8rem; color:var(--taupe); letter-spacing:.03em; margin-top:.3rem;
+  }
   .services-head{text-align:center; margin-bottom:4rem;}
   .services-head p{color:var(--parchment-dim); margin-top:1rem; max-width:600px; margin-left:auto; margin-right:auto;}
 
@@ -557,6 +573,14 @@
 
 <section class="services" id="services">
   <div class="container-wide">
+    <div class="founder reveal">
+      <img class="founder-photo" src="images/founder.jpg" alt="Portrait of Xiu Heng Quek">
+      <div>
+        <div class="founder-name">Xiu Heng Quek</div>
+        <div class="founder-title">Wealth Planner, Alpha Wealth Financial Advisors</div>
+      </div>
+    </div>
+
     <div class="services-head reveal">
       <span class="label">The Xiu Methodology</span>
       <h2>Three phases. One deliberate trajectory.</h2>
