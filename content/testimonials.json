@@ -1,0 +1,25 @@
+{
+  "items": [
+    {
+      "name": "J. Tan",
+      "role": "Business Owner",
+      "quote": "Xiu took the time to understand not just my portfolio, but my family's goals. I finally feel like I have a plan instead of a guess.",
+      "rating": 5,
+      "sample": true
+    },
+    {
+      "name": "M. Lim",
+      "role": "Young Professional",
+      "quote": "What stood out was the honesty. Xiu was upfront about trade-offs instead of just selling me the first product that came up.",
+      "rating": 5,
+      "sample": true
+    },
+    {
+      "name": "S. Koh",
+      "role": "Retiree",
+      "quote": "Retirement planning felt overwhelming until we sat down together. Everything was explained clearly, with no pressure.",
+      "rating": 5,
+      "sample": true
+    }
+  ]
+}

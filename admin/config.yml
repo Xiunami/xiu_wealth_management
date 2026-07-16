@@ -1,0 +1,33 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "testimonials"
+    label: "Client Testimonials"
+    files:
+      - file: "content/testimonials.json"
+        label: "Testimonials"
+        name: "testimonials"
+        fields:
+          - label: "Testimonials"
+            name: "items"
+            widget: "list"
+            summary: "{{name}} — {{role}}"
+            fields:
+              - {label: "Client name", name: "name", widget: "string", hint: "Use a first name + last initial if the client prefers not to be fully named."}
+              - {label: "Role / description", name: "role", widget: "string", required: false, hint: "e.g. Business Owner, Retiree, Young Professional"}
+              - {label: "Quote", name: "quote", widget: "text"}
+              - label: "Rating"
+                name: "rating"
+                widget: "select"
+                options: ["1", "2", "3", "4", "5"]
+                default: "5"
+              - label: "This is still a placeholder / sample entry"
+                name: "sample"
+                widget: "boolean"
+                default: false
+                hint: "Leave unchecked for real, consented client testimonials. Check this only for placeholder content."
