@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xiu Tools</title>
+<meta name="robots" content="noindex">
+<style>
+  :root{
+    --ink:#0a0b0d;
+    --panel:#16171a;
+    --panel-2:#1d1e22;
+    --parchment:#efe8d8;
+    --parchment-dim:#c9c2b0;
+    --brass:#b8924f;
+    --brass-light:#ddc07f;
+    --brass-dim:rgba(184,146,79,0.35);
+    --line:rgba(184,146,79,0.18);
+    --taupe:#8b8577;
+    --good:#7fae8e;
+    --font-display:Georgia,'Times New Roman','Iowan Old Style',serif;
+    --font-body:'Segoe UI',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--parchment);
+    font-family:var(--font-body);
+    line-height:1.6;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{color:inherit;}
+  input,select,button{font-family:inherit;}
+
+  .label{
+    font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--brass); font-weight:600;
+  }
+
+  h1,h2,h3{
+    font-family:var(--font-display); font-weight:400; font-style:italic;
+    color:var(--parchment); margin:0; text-wrap:balance;
+  }
+
+  .container{max-width:900px; margin:0 auto; padding:0 1.5rem;}
+
+  /* ---------- Gate ---------- */
+  #gate{
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    padding:2rem;
+  }
+  .gate-card{
+    max-width:360px; width:100%; text-align:center;
+    background:var(--panel); border:1px solid var(--line); border-left:2px solid var(--brass);
+    padding:2.8rem 2.2rem;
+  }
+  .gate-mark{
+    font-family:var(--font-display); font-style:italic; font-size:1.8rem;
+    color:var(--parchment); margin-bottom:.3rem;
+  }
+  .gate-mark span{color:var(--brass);}
+  .gate-sub{font-size:.78rem; color:var(--taupe); letter-spacing:.05em; margin-bottom:2rem;}
+  .gate-card input[type=password]{
+    width:100%; background:var(--ink); border:1px solid rgba(255,255,255,.1);
+    color:var(--parchment); font-size:1rem; padding:.85rem 1rem; border-radius:2px;
+    text-align:center; letter-spacing:.1em;
+  }
+  .gate-card input[type=password]:focus{outline:none; border-color:var(--brass);}
+  .gate-card button{
+    margin-top:1rem; width:100%; background:var(--brass); color:#161208; border:none;
+    font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; font-weight:600;
+    padding:.9rem; border-radius:2px; cursor:pointer; transition:background .2s ease;
+  }
+  .gate-card button:hover{background:var(--brass-light);}
+  .gate-error{
+    margin-top:1rem; font-size:.82rem; color:#d98c8c; min-height:1.2em;
+  }
+
+  /* ---------- App shell ---------- */
+  #app-shell{display:none;}
+  #app-shell.visible{display:block;}
+
+  .app-header{
+    position:sticky; top:0; z-index:10;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1.1rem 1.5rem; background:rgba(10,11,13,.92); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .app-header .back-link{
+    font-size:.78rem; text-decoration:none; color:var(--parchment-dim);
+    letter-spacing:.03em;
+  }
+  .app-header .back-link:hover{color:var(--brass-light);}
+  .app-header .app-title{
+    font-family:var(--font-display); font-style:italic; font-size:1.15rem;
+  }
+  .app-header .app-title span{color:var(--brass);}
+  .app-header .lock-btn{
+    background:transparent; border:1px solid var(--brass-dim); color:var(--parchment-dim);
+    font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+    padding:.5rem .9rem; border-radius:2px; cursor:pointer;
+  }
+  .app-header .lock-btn:hover{border-color:var(--brass); color:var(--brass-light);}
+
+  main{padding:3rem 0 6rem;}
+
+  /* ---------- Dashboard ---------- */
+  .view-head{margin-bottom:2.5rem;}
+  .view-head p{color:var(--parchment-dim); margin-top:.6rem;}
+
+  .tool-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:1.2rem;
+  }
+  .tool-card{
+    display:block; background:var(--panel); border:1px solid var(--line);
+    padding:1.6rem; border-radius:2px; text-decoration:none; color:inherit;
+    transition:border-color .2s ease, transform .2s ease;
+  }
+  .tool-card:hover{border-color:var(--brass); transform:translateY(-2px);}
+  .tool-card-icon{
+    width:44px; height:44px; border-radius:50%; border:1px solid var(--brass-dim);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-display); font-style:italic; color:var(--brass);
+    font-size:1.1rem; margin-bottom:1rem;
+  }
+  .tool-card-name{font-family:var(--font-display); font-style:italic; font-size:1.15rem; margin-bottom:.5rem;}
+  .tool-card-desc{font-size:.86rem; color:var(--parchment-dim); line-height:1.55;}
+  .tool-card-placeholder{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; border-style:dashed; opacity:.6;
+  }
+  .tool-card-placeholder .tool-card-name{color:var(--taupe); font-size:1rem;}
+
+  /* ---------- Guide layout ---------- */
+  .back-to-dashboard{
+    display:inline-block; font-size:.78rem; color:var(--parchment-dim); text-decoration:none;
+    margin-bottom:1.6rem;
+  }
+  .back-to-dashboard:hover{color:var(--brass-light);}
+  .guide-sub{color:var(--taupe); font-size:.9rem; margin-top:.4rem;}
+
+  .disclaimer-box{
+    margin:1.6rem 0 2.5rem; padding:1.1rem 1.3rem;
+    background:rgba(184,146,79,.08); border-left:2px solid var(--brass);
+    font-size:.85rem; color:var(--parchment-dim); line-height:1.6;
+  }
+  .disclaimer-box strong{color:var(--brass-light);}
+
+  .panel{
+    background:var(--panel); border:1px solid var(--line);
+    padding:1.8rem clamp(1.2rem,3vw,2.2rem); margin-bottom:1.8rem; border-radius:2px;
+  }
+  .panel h2{font-size:1.3rem; margin-bottom:.3rem;}
+  .panel-sub{font-size:.84rem; color:var(--taupe); margin-bottom:1.4rem;}
+  .panel-sub strong{color:var(--brass-light); font-weight:600;}
+
+  table{width:100%; border-collapse:collapse; font-size:.88rem;}
+  th{
+    text-align:left; font-size:.68rem; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--taupe); font-weight:600; padding:.5rem .6rem; border-bottom:1px solid var(--line);
+  }
+  td{padding:.6rem; border-bottom:1px solid rgba(255,255,255,.05); font-variant-numeric:tabular-nums;}
+  tr.band-active td{background:rgba(184,146,79,.1);}
+  .table-scroll{overflow-x:auto;}
+
+  /* ---------- Strategies accordion ---------- */
+  .strategy{
+    border-top:1px solid var(--line);
+  }
+  .strategy:last-child{border-bottom:1px solid var(--line);}
+  .strategy-head{
+    width:100%; display:flex; align-items:center; gap:1rem;
+    background:none; border:none; color:inherit; text-align:left; cursor:pointer;
+    padding:1rem 0;
+  }
+  .strategy-num{
+    width:28px; height:28px; border-radius:50%; flex-shrink:0;
+    background:rgba(184,146,79,.15); color:var(--brass-light);
+    display:flex; align-items:center; justify-content:center;
+    font-size:.82rem; font-weight:600;
+  }
+  .strategy-title{flex:1;}
+  .strategy-name{display:block; font-weight:600; font-size:.96rem;}
+  .strategy-hint{display:block; font-size:.8rem; color:var(--taupe); margin-top:.15rem;}
+  .strategy-amount{
+    font-size:.74rem; letter-spacing:.03em; color:var(--brass-light);
+    border:1px solid var(--brass-dim); padding:.3rem .7rem; border-radius:999px;
+    white-space:nowrap;
+  }
+  .strategy-chevron{color:var(--taupe); transition:transform .2s ease; flex-shrink:0;}
+  .strategy.open .strategy-chevron{transform:rotate(180deg);}
+  .strategy-body{
+    max-height:0; overflow:hidden; transition:max-height .25s ease;
+  }
+  .strategy.open .strategy-body{max-height:200px;}
+  .strategy-body p{
+    padding:0 0 1.1rem 44px; color:var(--parchment-dim); font-size:.88rem; line-height:1.6;
+  }
+
+  /* ---------- Calculator inputs ---------- */
+  .calc-grid{display:grid; grid-template-columns:1fr 1fr; gap:1.4rem; margin-bottom:1.6rem;}
+  .calc-field label{
+    display:block; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--brass); margin-bottom:.5rem;
+  }
+  .calc-field .amount-input{
+    display:flex; align-items:stretch; border:1px solid rgba(255,255,255,.1); border-radius:2px;
+    overflow:hidden;
+  }
+  .calc-field .amount-input span{
+    display:flex; align-items:center; padding:0 .8rem; background:var(--panel-2);
+    color:var(--taupe); font-size:.86rem;
+  }
+  .calc-field input[type=number]{
+    flex:1; min-width:0; background:var(--ink); border:none; color:var(--parchment);
+    font-size:.96rem; padding:.75rem .8rem; font-variant-numeric:tabular-nums;
+  }
+  .calc-field input[type=number]:focus{outline:none;}
+  .calc-field select{
+    width:100%; background:var(--ink); border:1px solid rgba(255,255,255,.1);
+    color:var(--parchment); font-size:.92rem; padding:.75rem .8rem; border-radius:2px;
+  }
+  .calc-field .slider-value{
+    color:var(--brass-light); font-size:.92rem; font-weight:600; margin-top:.5rem;
+    font-variant-numeric:tabular-nums;
+  }
+  input[type=range]{
+    width:100%; accent-color:var(--brass); margin-top:.3rem;
+  }
+
+  .stat-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:.9rem; margin-bottom:1.6rem;}
+  .stat-tile{
+    padding:1rem 1.1rem; border-radius:2px; background:var(--panel-2); border:1px solid var(--line);
+  }
+  .stat-tile.tone-brass{background:rgba(184,146,79,.12); border-color:var(--brass-dim);}
+  .stat-tile.tone-good{background:rgba(127,174,142,.12); border-color:rgba(127,174,142,.4);}
+  .stat-label{font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; color:var(--taupe);}
+  .stat-tile.tone-brass .stat-label{color:var(--brass-light);}
+  .stat-tile.tone-good .stat-label{color:var(--good);}
+  .stat-value{font-size:1.4rem; font-weight:600; margin-top:.3rem; font-variant-numeric:tabular-nums;}
+  .stat-note{font-size:.74rem; color:var(--taupe); margin-top:.2rem;}
+
+  .split-bar{
+    height:8px; border-radius:999px; overflow:hidden; display:flex; background:var(--panel-2);
+    margin-bottom:.4rem;
+  }
+  .split-bar-tax{background:linear-gradient(90deg,#c96a6a,var(--brass));}
+  .split-bar-take{background:var(--brass-dim); flex:1;}
+  .split-labels{display:flex; justify-content:space-between; font-size:.8rem; margin-bottom:1.6rem;}
+  .split-labels .tax-pct{color:#e08f8f;}
+  .split-labels .take-pct{color:var(--brass-light);}
+
+  .insight-box{
+    margin-top:1.4rem; padding:1rem 1.2rem; background:rgba(184,146,79,.08);
+    border-left:2px solid var(--brass); font-size:.88rem; color:var(--parchment-dim); line-height:1.6;
+  }
+  .insight-box strong{color:var(--brass-light);}
+
+  .breakdown-note{font-size:.78rem; color:var(--taupe); margin-top:1rem;}
+  .breakdown-note strong{color:var(--parchment-dim);}
+
+  .tool-footer-note{
+    text-align:center; font-size:.78rem; color:var(--taupe); margin-top:2.5rem;
+  }
+
+  @media (max-width:640px){
+    .calc-grid{grid-template-columns:1fr;}
+    .strategy-amount{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-card">
+    <div class="gate-mark">Xiu<span>.</span> Tools</div>
+    <div class="gate-sub">This area is private. Enter the password to continue.</div>
+    <form id="gate-form">
+      <input type="password" id="gate-password" autocomplete="off" autofocus>
+      <button type="submit">Unlock</button>
+      <div class="gate-error" id="gate-error"></div>
+    </form>
+  </div>
+</div>
+
+<div id="app-shell">
+  <header class="app-header">
+    <a class="back-link" href="../index.html">&larr; Back to site</a>
+    <span class="app-title">Xiu<span>.</span> Tools</span>
+    <button class="lock-btn" id="lock-btn">Lock</button>
+  </header>
+
+  <main>
+    <div class="container">
+
+      <section id="view-dashboard">
+        <div class="view-head">
+          <span class="label">Internal</span>
+          <h1>Tools</h1>
+          <p>Working calculators and guides for client conversations. More get added here over time.</p>
+        </div>
+        <div class="tool-grid">
+          <a class="tool-card" href="#tax-planning-guide">
+            <div class="tool-card-icon">S$</div>
+            <div class="tool-card-name">Tax Planning Guide</div>
+            <div class="tool-card-desc">Singapore YA2026 income tax rates, relief strategies, and two interactive calculators.</div>
+          </a>
+          <div class="tool-card tool-card-placeholder">
+            <div class="tool-card-name">More tools coming soon</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-tax-planning-guide" hidden>
+        <a class="back-to-dashboard" href="#">&larr; All tools</a>
+        <div class="view-head">
+          <h1>Singapore Tax Planning Guide</h1>
+          <p class="guide-sub">Year of Assessment 2026 (income earned in 2025) &middot; For advisory use</p>
+        </div>
+
+        <div class="disclaimer-box">
+          <strong>Disclaimer:</strong> This guide is for general educational purposes. Tax positions vary by individual circumstances. Always advise clients to consult a qualified tax professional or refer to IRAS directly for their specific situation.
+        </div>
+
+        <div class="panel">
+          <h2>Singapore personal income tax rates</h2>
+          <p class="panel-sub">YA 2026 &middot; Progressive rates 0%&ndash;24% &middot; <strong>+60% rebate on tax payable, capped at S$200 for YA 2026</strong></p>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr><th>Chargeable income</th><th>Rate</th><th>Tax on band</th><th>Cumulative tax</th></tr>
+              </thead>
+              <tbody id="rates-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Key tax reduction strategies</h2>
+          <p class="panel-sub">Click each to expand</p>
+          <div class="strategy-list" id="strategy-list"></div>
+        </div>
+
+        <div class="panel">
+          <h2>Lifetime Tax Calculator</h2>
+          <p class="panel-sub">Average of your current and expected retirement income, multiplied by years to retirement</p>
+
+          <div class="calc-grid">
+            <div class="calc-field">
+              <label for="lt-current-income">Current Annual Income</label>
+              <div class="amount-input"><span>S$</span><input type="number" id="lt-current-income" value="90000" min="0" step="1000"></div>
+            </div>
+            <div class="calc-field">
+              <label for="lt-retire-income">Expected Annual Income at Retirement</label>
+              <div class="amount-input"><span>S$</span><input type="number" id="lt-retire-income" value="150000" min="0" step="1000"></div>
+            </div>
+            <div class="calc-field">
+              <label for="lt-current-age">Current Age</label>
+              <select id="lt-current-age"></select>
+            </div>
+            <div class="calc-field">
+              <label for="lt-retire-age">Retirement Age</label>
+              <select id="lt-retire-age"></select>
+            </div>
+          </div>
+
+          <div class="stat-grid">
+            <div class="stat-tile">
+              <div class="stat-label">Average Income</div>
+              <div class="stat-value" id="lt-avg-income">&mdash;</div>
+              <div class="stat-note">(Current + Expected) &divide; 2</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-label">Years to Retirement</div>
+              <div class="stat-value" id="lt-years">&mdash;</div>
+              <div class="stat-note">Working years remaining</div>
+            </div>
+            <div class="stat-tile tone-brass">
+              <div class="stat-label">Annual Tax on Avg Income</div>
+              <div class="stat-value" id="lt-annual-tax">&mdash;</div>
+              <div class="stat-note">SG progressive rates applied</div>
+            </div>
+            <div class="stat-tile" style="background:rgba(224,143,143,.1); border-color:rgba(224,143,143,.35);">
+              <div class="stat-label" style="color:#e08f8f;">Estimated Lifetime Tax</div>
+              <div class="stat-value" id="lt-lifetime-tax">&mdash;</div>
+              <div class="stat-note">Annual tax &times; years to retirement</div>
+            </div>
+          </div>
+
+          <div class="split-bar">
+            <div class="split-bar-tax" id="lt-split-tax" style="width:0%"></div>
+            <div class="split-bar-take"></div>
+          </div>
+          <div class="split-labels">
+            <span class="tax-pct"><span id="lt-tax-pct">&mdash;</span> tax</span>
+            <span class="take-pct"><span id="lt-take-pct">&mdash;</span> take-home</span>
+          </div>
+
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Step</th><th>Calculation</th><th>Result</th></tr></thead>
+              <tbody id="lt-breakdown-body"></tbody>
+            </table>
+          </div>
+
+          <div class="insight-box" id="lt-insight"></div>
+        </div>
+
+        <div class="panel">
+          <h2>Personal Tax &amp; Relief Calculator</h2>
+          <p class="panel-sub">Estimate tax payable before and after reliefs, YA 2026</p>
+
+          <div class="calc-grid">
+            <div class="calc-field">
+              <label for="pt-income">Annual Employment Income</label>
+              <div class="amount-input"><span>S$</span><input type="number" id="pt-income" value="120000" min="0" step="1000"></div>
+            </div>
+            <div class="calc-field">
+              <label for="pt-residency">Residency Status</label>
+              <select id="pt-residency">
+                <option value="citizen">Singaporean / PR</option>
+                <option value="foreigner">Foreigner (Employment Pass)</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label for="pt-srs">SRS Contribution</label>
+              <input type="range" id="pt-srs" min="0" max="15300" step="100" value="12300">
+              <div class="slider-value" id="pt-srs-value">S$12,300</div>
+            </div>
+            <div class="calc-field">
+              <label for="pt-cpf">CPF Cash Top-Up (self)</label>
+              <input type="range" id="pt-cpf" min="0" max="8000" step="100" value="8000">
+              <div class="slider-value" id="pt-cpf-value">S$8,000</div>
+            </div>
+            <div class="calc-field">
+              <label for="pt-other">Other Reliefs (donations, course fees, dependants&hellip;)</label>
+              <div class="amount-input"><span>S$</span><input type="number" id="pt-other" value="0" min="0" step="100"></div>
+            </div>
+            <div class="calc-field">
+              <label for="pt-age">Age Group</label>
+              <select id="pt-age">
+                <option value="under55">Under 55</option>
+                <option value="55to59">55 to 59</option>
+                <option value="60plus">60 and above</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="stat-grid">
+            <div class="stat-tile">
+              <div class="stat-label">Gross Tax (before reliefs)</div>
+              <div class="stat-value" id="pt-gross-tax">&mdash;</div>
+              <div class="stat-note">On full chargeable income</div>
+            </div>
+            <div class="stat-tile tone-brass">
+              <div class="stat-label">Tax After Reliefs</div>
+              <div class="stat-value" id="pt-net-tax">&mdash;</div>
+              <div class="stat-note">After YA 2026 rebate applied</div>
+            </div>
+            <div class="stat-tile tone-good">
+              <div class="stat-label">Total Tax Savings</div>
+              <div class="stat-value" id="pt-savings">&mdash;</div>
+              <div class="stat-note">From all reliefs combined</div>
+            </div>
+          </div>
+
+          <p class="panel-sub" style="margin-bottom:.6rem;">How tax is calculated on your income after reliefs</p>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Band</th><th>Income in band</th><th>Rate</th><th>Tax</th></tr></thead>
+              <tbody id="pt-breakdown-body"></tbody>
+            </table>
+          </div>
+          <p class="breakdown-note" id="pt-footer"></p>
+        </div>
+
+        <p class="tool-footer-note">YA 2026 &middot; Tax rules subject to change, refer to iras.gov.sg &middot; Not tax advice.</p>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------------------------------------------------------- */
+  /* Password gate                                                     */
+  /* ---------------------------------------------------------------- */
+  var GATE_HASH = "a84c93c8f543c170913c0c2298cd2140410f6168aac024c2b68df18431fffea6";
+  var SESSION_KEY = "xiuToolsUnlocked";
+
+  function sha256Hex(text){
+    var data = new TextEncoder().encode(text);
+    return crypto.subtle.digest('SHA-256', data).then(function(buf){
+      return Array.from(new Uint8Array(buf)).map(function(b){
+        return b.toString(16).padStart(2, '0');
+      }).join('');
+    });
+  }
+
+  function showApp(){
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app-shell').classList.add('visible');
+    initApp();
+  }
+
+  if(sessionStorage.getItem(SESSION_KEY) === '1'){
+    showApp();
+  }
+
+  document.getElementById('gate-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    var val = document.getElementById('gate-password').value;
+    var errorEl = document.getElementById('gate-error');
+    sha256Hex(val).then(function(hash){
+      if(hash === GATE_HASH){
+        sessionStorage.setItem(SESSION_KEY, '1');
+        showApp();
+      } else {
+        errorEl.textContent = 'Incorrect password.';
+        document.getElementById('gate-password').value = '';
+      }
+    });
+  });
+
+  document.getElementById('lock-btn').addEventListener('click', function(){
+    sessionStorage.removeItem(SESSION_KEY);
+    location.reload();
+  });
+
+  /* ---------------------------------------------------------------- */
+  /* App init (runs once, after unlock)                                */
+  /* ---------------------------------------------------------------- */
+  var appInitialized = false;
+
+  function initApp(){
+    if(appInitialized) return;
+    appInitialized = true;
+
+    /* ---- Routing ---- */
+    var views = {
+      'dashboard': document.getElementById('view-dashboard'),
+      'tax-planning-guide': document.getElementById('view-tax-planning-guide')
+    };
+    function route(){
+      var hash = location.hash.replace('#', '') || 'dashboard';
+      if(!views[hash]) hash = 'dashboard';
+      Object.keys(views).forEach(function(key){
+        views[key].hidden = (key !== hash);
+      });
+      window.scrollTo(0, 0);
+    }
+    window.addEventListener('hashchange', route);
+    route();
+
+    /* ---------------------------------------------------------------- */
+    /* Singapore YA2026 resident tax logic                                */
+    /* ---------------------------------------------------------------- */
+    var BANDS = [
+      {upTo: 20000,      rate: 0},
+      {upTo: 30000,      rate: 0.02},
+      {upTo: 40000,      rate: 0.035},
+      {upTo: 80000,      rate: 0.07},
+      {upTo: 120000,     rate: 0.115},
+      {upTo: 160000,     rate: 0.15},
+      {upTo: 200000,     rate: 0.18},
+      {upTo: 240000,     rate: 0.19},
+      {upTo: 280000,     rate: 0.195},
+      {upTo: 320000,     rate: 0.20},
+      {upTo: 500000,     rate: 0.22},
+      {upTo: 1000000,    rate: 0.23},
+      {upTo: Infinity,   rate: 0.24}
+    ];
+    var REBATE_RATE = 0.6;
+    var REBATE_CAP = 200;
+    var SRS_CAP = {citizen: 15300, foreigner: 35700};
+    var EARNED_INCOME_RELIEF = {under55: 1000, '55to59': 6000, '60plus': 8000};
+
+    function computeTax(income){
+      var tax = 0, prev = 0;
+      for(var i=0; i<BANDS.length; i++){
+        var band = BANDS[i];
+        var taxableInBand = Math.max(0, Math.min(income, band.upTo) - prev);
+        tax += taxableInBand * band.rate;
+        prev = band.upTo;
+        if(income <= band.upTo) break;
+      }
+      return tax;
+    }
+    function computeRebate(tax){
+      return Math.min(tax * REBATE_RATE, REBATE_CAP);
+    }
+    function fmt(n){
+      return 'S$' + Math.round(n).toLocaleString('en-SG');
+    }
+    function fmtPct(n){
+      return n.toFixed(1) + '%';
+    }
+
+    /* ---- Rates table ---- */
+    var RATE_ROWS = [
+      {label:'First S$20,000',            rate:'0%',    band:20000},
+      {label:'Next S$10,000',             rate:'2%',    band:10000},
+      {label:'Next S$10,000',             rate:'3.5%',  band:10000},
+      {label:'Next S$40,000',             rate:'7%',    band:40000},
+      {label:'Next S$40,000 (S$80k–S$120k)',  rate:'11.5%', band:40000, hi:true},
+      {label:'Next S$40,000 (S$120k–S$160k)', rate:'15%',   band:40000, hi:true},
+      {label:'Next S$40,000 (S$160k–S$200k)', rate:'18%',   band:40000, hi:true},
+      {label:'Next S$40,000 (S$200k–S$240k)', rate:'19%',   band:40000},
+      {label:'Next S$40,000 (S$240k–S$280k)', rate:'19.5%', band:40000},
+      {label:'Next S$40,000 (S$280k–S$320k)', rate:'20%',   band:40000}
+    ];
+    (function renderRatesTable(){
+      var tbody = document.getElementById('rates-table-body');
+      var rows = '';
+      var running = 0;
+      RATE_ROWS.forEach(function(row){
+        var bandTax = computeTax(running + row.band) - computeTax(running);
+        running += row.band;
+        rows += '<tr class="' + (row.hi ? 'band-active' : '') + '">' +
+          '<td>' + row.label + '</td>' +
+          '<td>' + row.rate + '</td>' +
+          '<td>' + fmt(bandTax) + '</td>' +
+          '<td>' + fmt(running) + '</td>' +
+        '</tr>';
+      });
+      rows += '<tr><td>Above S$320,000</td><td>22&ndash;24%</td><td>&mdash;</td><td>&mdash;</td></tr>';
+      tbody.innerHTML = rows;
+    })();
+
+    /* ---- Strategies accordion ---- */
+    var STRATEGIES = [
+      {
+        name: 'Supplementary Retirement Scheme (SRS)',
+        hint: 'Most impactful single move for working adults',
+        amount: 'Up to S$15,300',
+        detail: "Contributions are dollar-for-dollar tax deductible up to the cap, and the funds can be invested. Withdrawals after the statutory retirement age are taxed on only 50% of the amount withdrawn."
+      },
+      {
+        name: 'CPF Cash Top-Up (RSTU Scheme)',
+        hint: 'Guaranteed 4% returns + tax relief',
+        amount: 'Up to S$16,000',
+        detail: "Cash top-ups to your own or a loved one's CPF accounts earn CPF's guaranteed interest rate and qualify for tax relief, subject to the combined cap."
+      },
+      {
+        name: 'Earned Income Relief',
+        hint: 'Automatic, easy win',
+        amount: 'Up to S$8,000',
+        detail: "Automatically granted to anyone with earned income for the year, no application needed. The amount scales with age band."
+      },
+      {
+        name: 'Life Insurance Relief',
+        hint: 'Relevant for lower CPF contributors',
+        amount: 'Up to S$5,000',
+        detail: "Available if your compulsory CPF contribution is below S$5,000 a year, covering life insurance premiums paid on your own life."
+      },
+      {
+        name: 'Donations to IPCs',
+        hint: '250% deduction, powerful for high earners',
+        amount: '250% deduction',
+        detail: "Donations to Institutions of a Public Character qualify for a 250% tax deduction: a S$1,000 donation reduces chargeable income by S$2,500."
+      },
+      {
+        name: 'Parent / Dependant Relief',
+        hint: 'Often overlooked',
+        amount: 'Up to S$14,000',
+        detail: "Relief for supporting a parent, grandparent, spouse, or sibling who depends on you, with a higher quantum if they live with you."
+      }
+    ];
+    (function renderStrategies(){
+      var list = document.getElementById('strategy-list');
+      list.innerHTML = STRATEGIES.map(function(s, i){
+        return '<div class="strategy">' +
+          '<button class="strategy-head" type="button" aria-expanded="false">' +
+            '<span class="strategy-num">' + (i+1) + '</span>' +
+            '<span class="strategy-title">' +
+              '<span class="strategy-name">' + s.name + '</span>' +
+              '<span class="strategy-hint">' + s.hint + '</span>' +
+            '</span>' +
+            '<span class="strategy-amount">' + s.amount + '</span>' +
+            '<span class="strategy-chevron">&#9662;</span>' +
+          '</button>' +
+          '<div class="strategy-body"><p>' + s.detail + '</p></div>' +
+        '</div>';
+      }).join('');
+      list.querySelectorAll('.strategy-head').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var strategy = btn.closest('.strategy');
+          var isOpen = strategy.classList.toggle('open');
+          btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+      });
+    })();
+
+    /* ---- Age dropdowns for Lifetime Calculator ---- */
+    (function populateAgeDropdowns(){
+      var currentAge = document.getElementById('lt-current-age');
+      var retireAge = document.getElementById('lt-retire-age');
+      for(var a=18; a<=70; a++){
+        currentAge.innerHTML += '<option value="'+a+'"' + (a===35?' selected':'') + '>' + a + '</option>';
+      }
+      for(var r=50; r<=75; r++){
+        retireAge.innerHTML += '<option value="'+r+'"' + (r===65?' selected':'') + '>' + r + '</option>';
+      }
+    })();
+
+    /* ---- Lifetime Tax Calculator ---- */
+    function renderLifetimeCalculator(){
+      var currentIncome = parseFloat(document.getElementById('lt-current-income').value) || 0;
+      var retireIncome = parseFloat(document.getElementById('lt-retire-income').value) || 0;
+      var currentAge = parseInt(document.getElementById('lt-current-age').value, 10);
+      var retireAge = parseInt(document.getElementById('lt-retire-age').value, 10);
+
+      var avgIncome = (currentIncome + retireIncome) / 2;
+      var years = Math.max(0, retireAge - currentAge);
+      var annualTax = computeTax(avgIncome);
+      var lifetimeTax = annualTax * years;
+      var taxPct = avgIncome > 0 ? (annualTax / avgIncome) * 100 : 0;
+      var takePct = 100 - taxPct;
+
+      document.getElementById('lt-avg-income').textContent = fmt(avgIncome);
+      document.getElementById('lt-years').textContent = years + ' yrs';
+      document.getElementById('lt-annual-tax').textContent = fmt(annualTax);
+      document.getElementById('lt-lifetime-tax').textContent = fmt(lifetimeTax);
+      document.getElementById('lt-split-tax').style.width = Math.min(100, taxPct) + '%';
+      document.getElementById('lt-tax-pct').textContent = fmtPct(taxPct);
+      document.getElementById('lt-take-pct').textContent = fmtPct(takePct);
+
+      document.getElementById('lt-breakdown-body').innerHTML =
+        '<tr><td>&#9312; Current annual income</td><td>&mdash;</td><td>' + fmt(currentIncome) + '</td></tr>' +
+        '<tr><td>&#9313; Expected income at retirement</td><td>&mdash;</td><td>' + fmt(retireIncome) + '</td></tr>' +
+        '<tr><td>&#9314; Average income</td><td>(' + fmt(currentIncome) + ' + ' + fmt(retireIncome) + ') &divide; 2</td><td><strong>' + fmt(avgIncome) + '</strong></td></tr>' +
+        '<tr><td>&#9315; Annual tax on average income</td><td>SG tax rates applied</td><td>' + fmt(annualTax) + '</td></tr>' +
+        '<tr><td>&#9316; Years to retirement</td><td>Age ' + retireAge + ' &minus; Age ' + currentAge + '</td><td>' + years + ' yrs</td></tr>' +
+        '<tr><td><strong>&#9317; Estimated lifetime tax</strong></td><td>' + fmt(annualTax) + ' &times; ' + years + '</td><td><strong>' + fmt(lifetimeTax) + '</strong></td></tr>';
+
+      var reducedChargeable = Math.max(0, avgIncome - SRS_CAP.citizen - 8000);
+      var reducedTax = computeTax(reducedChargeable);
+      var lifetimeSavings = Math.max(0, (annualTax - reducedTax) * years);
+      document.getElementById('lt-insight').innerHTML =
+        '&#128161; <strong>What this means:</strong> Fully utilising SRS + CPF top-ups could reduce this client\'s lifetime tax bill by an estimated <strong>' + fmt(lifetimeSavings) + '</strong>.';
+    }
+    ['lt-current-income','lt-retire-income','lt-current-age','lt-retire-age'].forEach(function(id){
+      document.getElementById(id).addEventListener('input', renderLifetimeCalculator);
+      document.getElementById(id).addEventListener('change', renderLifetimeCalculator);
+    });
+    renderLifetimeCalculator();
+
+    /* ---- Personal Tax & Relief Calculator ---- */
+    var PT_BAND_LABELS = [
+      {upTo:20000, label:'First S$20,000'},
+      {upTo:30000, label:'Next S$10,000'},
+      {upTo:40000, label:'Next S$10,000'},
+      {upTo:80000, label:'Next S$40,000'},
+      {upTo:120000, label:'S$80k–120k'},
+      {upTo:160000, label:'S$120k–160k'},
+      {upTo:200000, label:'S$160k–200k'},
+      {upTo:240000, label:'S$200k–240k'},
+      {upTo:280000, label:'S$240k–280k'},
+      {upTo:320000, label:'S$280k–320k'},
+      {upTo:500000, label:'S$320k–500k'},
+      {upTo:1000000, label:'S$500k–1M'},
+      {upTo:Infinity, label:'Above S$1M'}
+    ];
+
+    function renderPersonalCalculator(){
+      var income = parseFloat(document.getElementById('pt-income').value) || 0;
+      var residency = document.getElementById('pt-residency').value;
+      var srs = parseFloat(document.getElementById('pt-srs').value) || 0;
+      var cpf = parseFloat(document.getElementById('pt-cpf').value) || 0;
+      var other = parseFloat(document.getElementById('pt-other').value) || 0;
+      var ageGroup = document.getElementById('pt-age').value;
+
+      var srsCap = SRS_CAP[residency] || SRS_CAP.citizen;
+      srs = Math.min(srs, srsCap);
+      var earnedIncomeRelief = EARNED_INCOME_RELIEF[ageGroup] || 0;
+
+      document.getElementById('pt-srs-value').textContent = fmt(srs);
+      document.getElementById('pt-cpf-value').textContent = fmt(cpf);
+
+      var grossTax = computeTax(income);
+      var chargeableAfterReliefs = Math.max(0, income - srs - cpf - other - earnedIncomeRelief);
+      var taxBeforeRebate = computeTax(chargeableAfterReliefs);
+      var rebate = computeRebate(taxBeforeRebate);
+      var taxPayable = taxBeforeRebate - rebate;
+      var savings = grossTax - taxPayable;
+
+      document.getElementById('pt-gross-tax').textContent = fmt(grossTax);
+      document.getElementById('pt-net-tax').textContent = fmt(taxPayable);
+      document.getElementById('pt-savings').textContent = fmt(savings);
+
+      var rows = '';
+      var running = 0;
+      PT_BAND_LABELS.forEach(function(row){
+        var incomeInBand = Math.max(0, Math.min(chargeableAfterReliefs, row.upTo) - running);
+        if(incomeInBand <= 0){ running = row.upTo; return; }
+        var bandTax = computeTax(Math.min(chargeableAfterReliefs, row.upTo)) - computeTax(running);
+        var rate = BANDS.find(function(b){ return b.upTo === row.upTo; }).rate;
+        rows += '<tr>' +
+          '<td>' + row.label + '</td>' +
+          '<td>' + fmt(incomeInBand) + '</td>' +
+          '<td>' + (rate*100).toFixed(1).replace('.0','') + '%</td>' +
+          '<td>' + fmt(bandTax) + '</td>' +
+        '</tr>';
+        running = row.upTo;
+      });
+      document.getElementById('pt-breakdown-body').innerHTML = rows;
+
+      var effectiveRate = income > 0 ? (taxPayable / income) * 100 : 0;
+      var marginalBand = BANDS.find(function(b){ return chargeableAfterReliefs <= b.upTo; }) || BANDS[BANDS.length-1];
+      document.getElementById('pt-footer').innerHTML =
+        'Effective rate: <strong>' + effectiveRate.toFixed(1) + '%</strong> &middot; ' +
+        'Marginal rate: <strong>' + (marginalBand.rate*100).toFixed(1).replace('.0','') + '%</strong> &middot; ' +
+        'Chargeable income after reliefs: <strong>' + fmt(chargeableAfterReliefs) + '</strong>';
+    }
+    ['pt-income','pt-residency','pt-srs','pt-cpf','pt-other','pt-age'].forEach(function(id){
+      document.getElementById(id).addEventListener('input', renderPersonalCalculator);
+      document.getElementById(id).addEventListener('change', renderPersonalCalculator);
+    });
+    renderPersonalCalculator();
+  }
+})();
+</script>
+
+</body>
+</html>
