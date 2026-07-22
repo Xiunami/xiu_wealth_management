@@ -7,17 +7,17 @@
 <meta name="robots" content="noindex">
 <style>
   :root{
-    --ink:#0a0b0d;
-    --panel:#16171a;
-    --panel-2:#1d1e22;
-    --parchment:#efe8d8;
-    --parchment-dim:#c9c2b0;
-    --brass:#b8924f;
-    --brass-light:#ddc07f;
-    --brass-dim:rgba(184,146,79,0.35);
-    --line:rgba(184,146,79,0.18);
-    --taupe:#8b8577;
-    --good:#7fae8e;
+    --ink:#f6f2ea;
+    --panel:#ffffff;
+    --panel-2:#efe8d8;
+    --parchment:#221f19;
+    --parchment-dim:#5c5648;
+    --brass:#96742f;
+    --brass-light:#b8862e;
+    --brass-dim:rgba(150,116,47,0.35);
+    --line:rgba(150,116,47,0.2);
+    --taupe:#7a7461;
+    --good:#4f8a63;
     --font-display:Georgia,'Times New Roman','Iowan Old Style',serif;
     --font-body:'Segoe UI',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
   }
@@ -66,7 +66,7 @@
   .gate-mark span{color:var(--brass);}
   .gate-sub{font-size:.78rem; color:var(--taupe); letter-spacing:.05em; margin-bottom:2rem;}
   .gate-card input[type=password]{
-    width:100%; background:var(--ink); border:1px solid rgba(255,255,255,.1);
+    width:100%; background:var(--ink); border:1px solid rgba(0,0,0,.14);
     color:var(--parchment); font-size:1rem; padding:.85rem 1rem; border-radius:2px;
     text-align:center; letter-spacing:.1em;
   }
@@ -78,7 +78,7 @@
   }
   .gate-card button:hover{background:var(--brass-light);}
   .gate-error{
-    margin-top:1rem; font-size:.82rem; color:#d98c8c; min-height:1.2em;
+    margin-top:1rem; font-size:.82rem; color:#a34444; min-height:1.2em;
   }
 
   /* ---------- App shell ---------- */
@@ -88,7 +88,7 @@
   .app-header{
     position:sticky; top:0; z-index:10;
     display:flex; align-items:center; justify-content:space-between;
-    padding:1.1rem 1.5rem; background:rgba(10,11,13,.92); backdrop-filter:blur(8px);
+    padding:1.1rem 1.5rem; background:rgba(246,242,234,.92); backdrop-filter:blur(8px);
     border-bottom:1px solid var(--line);
   }
   .app-header .back-link{
@@ -146,7 +146,7 @@
 
   .disclaimer-box{
     margin:1.6rem 0 2.5rem; padding:1.1rem 1.3rem;
-    background:rgba(184,146,79,.08); border-left:2px solid var(--brass);
+    background:rgba(150,116,47,.08); border-left:2px solid var(--brass);
     font-size:.85rem; color:var(--parchment-dim); line-height:1.6;
   }
   .disclaimer-box strong{color:var(--brass-light);}
@@ -164,8 +164,8 @@
     text-align:left; font-size:.68rem; letter-spacing:.08em; text-transform:uppercase;
     color:var(--taupe); font-weight:600; padding:.5rem .6rem; border-bottom:1px solid var(--line);
   }
-  td{padding:.6rem; border-bottom:1px solid rgba(255,255,255,.05); font-variant-numeric:tabular-nums;}
-  tr.band-active td{background:rgba(184,146,79,.1);}
+  td{padding:.6rem; border-bottom:1px solid rgba(0,0,0,.07); font-variant-numeric:tabular-nums;}
+  tr.band-active td{background:rgba(150,116,47,.1);}
   .table-scroll{overflow-x:auto;}
 
   /* ---------- Strategies accordion ---------- */
@@ -180,7 +180,7 @@
   }
   .strategy-num{
     width:28px; height:28px; border-radius:50%; flex-shrink:0;
-    background:rgba(184,146,79,.15); color:var(--brass-light);
+    background:rgba(150,116,47,.15); color:var(--brass-light);
     display:flex; align-items:center; justify-content:center;
     font-size:.82rem; font-weight:600;
   }
@@ -209,7 +209,7 @@
     color:var(--brass); margin-bottom:.5rem;
   }
   .calc-field .amount-input{
-    display:flex; align-items:stretch; border:1px solid rgba(255,255,255,.1); border-radius:2px;
+    display:flex; align-items:stretch; border:1px solid rgba(0,0,0,.14); border-radius:2px;
     overflow:hidden;
   }
   .calc-field .amount-input span{
@@ -222,7 +222,7 @@
   }
   .calc-field input[type=number]:focus{outline:none;}
   .calc-field select{
-    width:100%; background:var(--ink); border:1px solid rgba(255,255,255,.1);
+    width:100%; background:var(--ink); border:1px solid rgba(0,0,0,.14);
     color:var(--parchment); font-size:.92rem; padding:.75rem .8rem; border-radius:2px;
   }
   .calc-field .slider-value{
@@ -237,8 +237,8 @@
   .stat-tile{
     padding:1rem 1.1rem; border-radius:2px; background:var(--panel-2); border:1px solid var(--line);
   }
-  .stat-tile.tone-brass{background:rgba(184,146,79,.12); border-color:var(--brass-dim);}
-  .stat-tile.tone-good{background:rgba(127,174,142,.12); border-color:rgba(127,174,142,.4);}
+  .stat-tile.tone-brass{background:rgba(150,116,47,.12); border-color:var(--brass-dim);}
+  .stat-tile.tone-good{background:rgba(79,138,99,.12); border-color:rgba(79,138,99,.4);}
   .stat-label{font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; color:var(--taupe);}
   .stat-tile.tone-brass .stat-label{color:var(--brass-light);}
   .stat-tile.tone-good .stat-label{color:var(--good);}
@@ -249,14 +249,14 @@
     height:8px; border-radius:999px; overflow:hidden; display:flex; background:var(--panel-2);
     margin-bottom:.4rem;
   }
-  .split-bar-tax{background:linear-gradient(90deg,#c96a6a,var(--brass));}
+  .split-bar-tax{background:linear-gradient(90deg,#a34444,var(--brass));}
   .split-bar-take{background:var(--brass-dim); flex:1;}
   .split-labels{display:flex; justify-content:space-between; font-size:.8rem; margin-bottom:1.6rem;}
-  .split-labels .tax-pct{color:#e08f8f;}
+  .split-labels .tax-pct{color:#a34444;}
   .split-labels .take-pct{color:var(--brass-light);}
 
   .insight-box{
-    margin-top:1.4rem; padding:1rem 1.2rem; background:rgba(184,146,79,.08);
+    margin-top:1.4rem; padding:1rem 1.2rem; background:rgba(150,116,47,.08);
     border-left:2px solid var(--brass); font-size:.88rem; color:var(--parchment-dim); line-height:1.6;
   }
   .insight-box strong{color:var(--brass-light);}
@@ -385,8 +385,8 @@
               <div class="stat-value" id="lt-annual-tax">&mdash;</div>
               <div class="stat-note">SG progressive rates applied</div>
             </div>
-            <div class="stat-tile" style="background:rgba(224,143,143,.1); border-color:rgba(224,143,143,.35);">
-              <div class="stat-label" style="color:#e08f8f;">Estimated Lifetime Tax</div>
+            <div class="stat-tile" style="background:rgba(163,68,68,.08); border-color:rgba(163,68,68,.35);">
+              <div class="stat-label" style="color:#a34444;">Estimated Lifetime Tax</div>
               <div class="stat-value" id="lt-lifetime-tax">&mdash;</div>
               <div class="stat-note">Annual tax &times; years to retirement</div>
             </div>
