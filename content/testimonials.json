@@ -1,6 +1,34 @@
 {
   "items": [
     {
+      "name": "Wendy W.",
+      "role": "Business Owner",
+      "quote": "Working with Xiu has been a fantastic experience. He's extremely approachable, friendly, and professional. Highly recommended!",
+      "rating": 5,
+      "sample": false
+    },
+    {
+      "name": "Ashley",
+      "role": "A Creative",
+      "quote": "Xiu is very thorough with his breakdowns and helped me a lot on my financial journey. He cleared up a lot of my doubts and gave me real assurance when it came to my finances. Great to work with, and extremely patient. Much appreciated!",
+      "rating": 5,
+      "sample": false
+    },
+    {
+      "name": "Zachary C.",
+      "role": "Entrepreneur",
+      "quote": "Xiu Heng is knowledgeable, patient, and entirely without the hard sell. He took the time to understand my financial goals before recommending anything, explained the reasoning behind each option, and responded promptly throughout. My portfolio and financial planning were sorted with minimal fuss and complete transparency. Highly recommended.",
+      "rating": 5,
+      "sample": false
+    },
+    {
+      "name": "Shing",
+      "role": "Business Owner",
+      "quote": "I was one of Xiu's early clients, and I'm leaving this review as a testament to his commitment to making sure I'm well taken care of after three years under his charge. With so many agents around, Xiu stands out as empathetic, organised, efficient, and extremely knowledgeable about finance. He sends regular portfolio updates and is always responsive whenever I need a check-in. If you're looking for an agent who is highly capable and committed to your growth, I highly recommend working with him.",
+      "rating": 5,
+      "sample": false
+    },
+    {
       "name": "Tony L.",
       "role": "Business Owner",
       "quote": "My overall experience has been fantastic. Xiu is steady, thoughtful, and clearly knows his stuff. I really dislike pushy agents who try to hard-sell everything, but Xiu breaks down all the fine print so nothing's confusing, and only recommends what I actually need. Highly recommended. No regrets at all.",
