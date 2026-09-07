@@ -233,6 +233,15 @@
     width:100%; accent-color:var(--brass); margin-top:.3rem;
   }
 
+  .tier-toggle{display:flex; gap:.6rem; flex-wrap:wrap;}
+  .tier-btn{
+    padding:.65rem 1.3rem; border-radius:999px; border:1px solid var(--line);
+    background:var(--panel); color:var(--parchment-dim); font-size:.84rem; font-weight:600;
+    cursor:pointer; transition:background .2s ease, border-color .2s ease, color .2s ease;
+  }
+  .tier-btn:hover{border-color:var(--brass);}
+  .tier-btn.active{background:var(--brass); border-color:var(--brass); color:#161208;}
+
   .stat-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:.9rem; margin-bottom:1.6rem;}
   .stat-tile{
     padding:1rem 1.1rem; border-radius:2px; background:var(--panel-2); border:1px solid var(--line);
@@ -309,6 +318,11 @@
             <div class="tool-card-icon">S$</div>
             <div class="tool-card-name">Tax Planning Guide</div>
             <div class="tool-card-desc">Singapore YA2026 income tax rates, relief strategies, and two interactive calculators.</div>
+          </a>
+          <a class="tool-card" href="#cpf-life-calculator">
+            <div class="tool-card-icon" style="font-size:.8rem;">CPF</div>
+            <div class="tool-card-name">CPF LIFE Payout Calculator</div>
+            <div class="tool-card-desc">Estimate monthly CPF LIFE payouts across BRS, FRS, and ERS, by plan type and payout start age.</div>
           </a>
           <div class="tool-card tool-card-placeholder">
             <div class="tool-card-name">More tools coming soon</div>
@@ -482,6 +496,85 @@
         <p class="tool-footer-note">YA 2026 &middot; Tax rules subject to change, refer to iras.gov.sg &middot; Not tax advice.</p>
       </section>
 
+      <section id="view-cpf-life-calculator" hidden>
+        <a class="back-to-dashboard" href="#">&larr; All tools</a>
+        <div class="view-head">
+          <h1>CPF LIFE Payout Calculator</h1>
+          <p class="guide-sub">Estimated monthly payouts by Retirement Sum tier &middot; For advisory use</p>
+        </div>
+
+        <div class="disclaimer-box">
+          <strong>Disclaimer:</strong> Figures are illustrative estimates based on CPF Board's published reference payouts, scaled for plan type and payout start age. Actual CPF LIFE payouts are determined by CPF Board's prevailing computation at the time payouts begin. Always verify current figures with the official CPF LIFE Estimator at cpf.gov.sg before advising clients.
+        </div>
+
+        <div class="panel">
+          <h2>Retirement Sum tiers (2026 cohort)</h2>
+          <p class="panel-sub">Set aside in the Retirement Account at age 55 &middot; Estimated monthly payout shown is for the Standard Plan starting at age 65</p>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Tier</th><th>Retirement sum</th><th>Est. monthly payout</th></tr></thead>
+              <tbody id="cpf-tiers-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Payout Calculator</h2>
+          <p class="panel-sub">Estimate a client's monthly CPF LIFE payout</p>
+
+          <div class="calc-field" style="margin-bottom:1.6rem;">
+            <label>Retirement Sum</label>
+            <div class="tier-toggle" id="cpf-tier-toggle">
+              <button type="button" class="tier-btn active" data-tier="BRS">BRS</button>
+              <button type="button" class="tier-btn" data-tier="FRS">FRS</button>
+              <button type="button" class="tier-btn" data-tier="ERS">ERS</button>
+              <button type="button" class="tier-btn" data-tier="custom">Custom amount</button>
+            </div>
+          </div>
+
+          <div class="calc-grid">
+            <div class="calc-field" id="cpf-custom-field" hidden>
+              <label for="cpf-custom-amount">Retirement Account Savings at 55</label>
+              <div class="amount-input"><span>S$</span><input type="number" id="cpf-custom-amount" value="110200" min="0" step="1000"></div>
+            </div>
+            <div class="calc-field">
+              <label for="cpf-plan">CPF LIFE Plan</label>
+              <select id="cpf-plan">
+                <option value="standard">Standard Plan</option>
+                <option value="basic">Basic Plan</option>
+                <option value="escalating">Escalating Plan (2% p.a.)</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label for="cpf-start-age">Payout Start Age</label>
+              <select id="cpf-start-age"></select>
+            </div>
+          </div>
+
+          <div class="stat-grid">
+            <div class="stat-tile">
+              <div class="stat-label">Retirement Sum Used</div>
+              <div class="stat-value" id="cpf-sum-used">&mdash;</div>
+              <div class="stat-note" id="cpf-sum-tier-note">&mdash;</div>
+            </div>
+            <div class="stat-tile tone-brass">
+              <div class="stat-label">Estimated Monthly Payout</div>
+              <div class="stat-value" id="cpf-monthly-payout">&mdash;</div>
+              <div class="stat-note" id="cpf-payout-note">&mdash;</div>
+            </div>
+            <div class="stat-tile tone-good">
+              <div class="stat-label">Estimated Annual Payout</div>
+              <div class="stat-value" id="cpf-annual-payout">&mdash;</div>
+              <div class="stat-note">12 months of payouts</div>
+            </div>
+          </div>
+
+          <p class="breakdown-note" id="cpf-breakdown-note"></p>
+        </div>
+
+        <p class="tool-footer-note">2026 cohort figures &middot; Actual payouts are determined by CPF Board when payouts begin &middot; Not financial advice.</p>
+      </section>
+
     </div>
   </main>
 </div>
@@ -547,7 +640,8 @@
     /* ---- Routing ---- */
     var views = {
       'dashboard': document.getElementById('view-dashboard'),
-      'tax-planning-guide': document.getElementById('view-tax-planning-guide')
+      'tax-planning-guide': document.getElementById('view-tax-planning-guide'),
+      'cpf-life-calculator': document.getElementById('view-cpf-life-calculator')
     };
     function route(){
       var hash = location.hash.replace('#', '') || 'dashboard';
@@ -825,6 +919,129 @@
       document.getElementById(id).addEventListener('change', renderPersonalCalculator);
     });
     renderPersonalCalculator();
+
+    /* ---- CPF LIFE Payout Calculator ---- */
+    var CPF_TIERS = {
+      BRS: {sum: 110200, payoutLow: 970, payoutHigh: 1040},
+      FRS: {sum: 220400, payoutLow: 1730, payoutHigh: 1860},
+      ERS: {sum: 440800, payoutLow: 3330, payoutHigh: 3570}
+    };
+    var CPF_PLAN_MULTIPLIER = {standard: 1, basic: 0.90, escalating: 0.80};
+
+    function estimateStandardPayout(sum){
+      if(sum <= 0) return {low: 0, high: 0};
+      if(sum <= CPF_TIERS.BRS.sum){
+        var scale = sum / CPF_TIERS.BRS.sum;
+        return {low: CPF_TIERS.BRS.payoutLow * scale, high: CPF_TIERS.BRS.payoutHigh * scale};
+      }
+      if(sum <= CPF_TIERS.FRS.sum){
+        var t = (sum - CPF_TIERS.BRS.sum) / (CPF_TIERS.FRS.sum - CPF_TIERS.BRS.sum);
+        return {
+          low: CPF_TIERS.BRS.payoutLow + t * (CPF_TIERS.FRS.payoutLow - CPF_TIERS.BRS.payoutLow),
+          high: CPF_TIERS.BRS.payoutHigh + t * (CPF_TIERS.FRS.payoutHigh - CPF_TIERS.BRS.payoutHigh)
+        };
+      }
+      var t2 = Math.min(1, (sum - CPF_TIERS.FRS.sum) / (CPF_TIERS.ERS.sum - CPF_TIERS.FRS.sum));
+      var base = {
+        low: CPF_TIERS.FRS.payoutLow + t2 * (CPF_TIERS.ERS.payoutLow - CPF_TIERS.FRS.payoutLow),
+        high: CPF_TIERS.FRS.payoutHigh + t2 * (CPF_TIERS.ERS.payoutHigh - CPF_TIERS.FRS.payoutHigh)
+      };
+      if(sum > CPF_TIERS.ERS.sum){
+        var overScale = sum / CPF_TIERS.ERS.sum;
+        base.low *= overScale; base.high *= overScale;
+      }
+      return base;
+    }
+
+    (function renderCpfTiersTable(){
+      var tbody = document.getElementById('cpf-tiers-body');
+      if(!tbody) return;
+      var rows = '';
+      ['BRS','FRS','ERS'].forEach(function(key){
+        var t = CPF_TIERS[key];
+        rows += '<tr>' +
+          '<td>' + key + '</td>' +
+          '<td>' + fmt(t.sum) + '</td>' +
+          '<td>' + fmt(t.payoutLow) + ' &ndash; ' + fmt(t.payoutHigh) + '</td>' +
+        '</tr>';
+      });
+      tbody.innerHTML = rows;
+    })();
+
+    (function populateCpfStartAge(){
+      var select = document.getElementById('cpf-start-age');
+      if(!select) return;
+      for(var age = 65; age <= 70; age++){
+        select.innerHTML += '<option value="' + age + '">' + age + (age === 65 ? ' (earliest)' : '') + '</option>';
+      }
+    })();
+
+    var cpfSelectedTier = 'BRS';
+    var cpfTierBtns = document.querySelectorAll('#cpf-tier-toggle .tier-btn');
+    var cpfCustomField = document.getElementById('cpf-custom-field');
+    cpfTierBtns.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        cpfTierBtns.forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        cpfSelectedTier = btn.getAttribute('data-tier');
+        if(cpfCustomField) cpfCustomField.hidden = (cpfSelectedTier !== 'custom');
+        renderCpfCalculator();
+      });
+    });
+
+    function renderCpfCalculator(){
+      var sum;
+      var tierNote;
+      if(cpfSelectedTier === 'custom'){
+        sum = parseFloat(document.getElementById('cpf-custom-amount').value) || 0;
+        tierNote = 'Custom amount';
+      } else {
+        sum = CPF_TIERS[cpfSelectedTier].sum;
+        tierNote = cpfSelectedTier + ' (2026 cohort)';
+      }
+
+      var plan = document.getElementById('cpf-plan').value;
+      var startAge = parseInt(document.getElementById('cpf-start-age').value, 10) || 65;
+
+      var base = estimateStandardPayout(sum);
+      var planMultiplier = CPF_PLAN_MULTIPLIER[plan];
+      var ageMultiplier = Math.pow(1.07, startAge - 65);
+
+      var low = base.low * planMultiplier * ageMultiplier;
+      var high = base.high * planMultiplier * ageMultiplier;
+
+      document.getElementById('cpf-sum-used').textContent = fmt(sum);
+      document.getElementById('cpf-sum-tier-note').textContent = tierNote;
+      document.getElementById('cpf-monthly-payout').textContent = fmt(low) + ' – ' + fmt(high);
+      document.getElementById('cpf-payout-note').textContent =
+        (plan === 'standard' ? 'Standard Plan' : plan === 'basic' ? 'Basic Plan' : 'Escalating Plan, starting amount') +
+        ', from age ' + startAge;
+      document.getElementById('cpf-annual-payout').textContent = fmt(low*12) + ' – ' + fmt(high*12);
+
+      var notes = [];
+      if(startAge > 65){
+        notes.push('Deferring payouts from 65 to ' + startAge + ' increases the monthly amount by roughly ' + Math.round((ageMultiplier-1)*100) + '%.');
+      }
+      if(plan === 'basic'){
+        notes.push('The Basic Plan pays out less than Standard but preserves more of the Retirement Account as bequest for beneficiaries.');
+      }
+      if(plan === 'escalating'){
+        notes.push('The Escalating Plan starts lower but increases by about 2% each year, helping payouts keep pace with rising costs of living.');
+      }
+      if(sum > CPF_TIERS.ERS.sum){
+        notes.push('This amount exceeds the Enhanced Retirement Sum cap; CPF members cannot actually set aside more than the ERS.');
+      }
+      document.getElementById('cpf-breakdown-note').innerHTML = notes.join(' ');
+    }
+
+    ['cpf-plan','cpf-start-age','cpf-custom-amount'].forEach(function(id){
+      var el = document.getElementById(id);
+      if(el){
+        el.addEventListener('input', renderCpfCalculator);
+        el.addEventListener('change', renderCpfCalculator);
+      }
+    });
+    renderCpfCalculator();
   }
 })();
 </script>
